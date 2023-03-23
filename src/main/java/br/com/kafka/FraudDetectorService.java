@@ -1,28 +1,23 @@
 package br.com.kafka;
 
-import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.apache.kafka.clients.consumer.KafkaConsumer;
-import org.apache.kafka.common.serialization.StringDeserializer;
 
-import java.time.Duration;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Properties;
 import java.util.UUID;
 
 public class FraudDetectorService {
 
-    public static void main(String [] args){
+    public static void main(String[] args) {
 
         var fraudDetectorService = new FraudDetectorService();
-        var service = new KafkaService(
+        try (var service = new KafkaService(
                 FraudDetectorService.class.getSimpleName(),
-                FraudDetectorService.class.getSimpleName() + "_" + UUID.randomUUID().toString(),
+                FraudDetectorService.class.getSimpleName() + "_" + UUID.randomUUID(),
                 "ECOMMERCE_NEW_ORDER",
                 fraudDetectorService::parse
-        );
-        service.run();
+        )) {
+            service.run();
+        }
+
     }
 
     private void parse(ConsumerRecord<Object, Object> record) {

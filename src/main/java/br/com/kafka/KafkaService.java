@@ -4,12 +4,12 @@ import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.serialization.StringDeserializer;
 
+import java.io.Closeable;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.Properties;
-import java.util.UUID;
 
-class KafkaService {
+class KafkaService implements Closeable {
     private final KafkaConsumer<Object, Object> consumer;
     private final ConsumerFunction parse;
 
@@ -22,7 +22,7 @@ class KafkaService {
     void run() {
         while (true) {
             var records = consumer.poll(Duration.ofMillis(300));
-            if(!records.isEmpty()) {
+            if (!records.isEmpty()) {
                 if (!records.isEmpty()) {
                     System.out.println("Encontrei " + records.count() + " registros.");
                     for (var record : records) {
@@ -42,5 +42,10 @@ class KafkaService {
         properties.setProperty(ConsumerConfig.CLIENT_ID_CONFIG, clientIdConfig);
         properties.setProperty(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, "1");
         return properties;
+    }
+
+    @Override
+    public void close() {
+        consumer.close();
     }
 }
