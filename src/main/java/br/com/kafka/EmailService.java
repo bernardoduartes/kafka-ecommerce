@@ -8,12 +8,18 @@ import org.apache.kafka.common.serialization.StringDeserializer;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.Properties;
+import java.util.UUID;
 
 public class EmailService {
 
     public static void main(String [] args){
         var emailService = new EmailService();
-        var service = new KafkaService("ECOMMERCE_SEND_EMAIL", emailService::parse);
+        var service = new KafkaService(
+                EmailService.class.getSimpleName(),
+                EmailService.class.getSimpleName() + "_" + UUID.randomUUID().toString(),
+                "ECOMMERCE_SEND_EMAIL",
+                emailService::parse
+        );
         service.run();
     }
 
