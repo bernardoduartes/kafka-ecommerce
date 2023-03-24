@@ -1,9 +1,9 @@
-package br.com.kafka;
+package br.com.kafka.dto;
 
-public class Email {
+public class EmailDTO {
     private final String subject, body;
 
-    public Email(String subject, String body) {
+    public EmailDTO(String subject, String body) {
         this.subject = subject;
         this.body = body;
     }

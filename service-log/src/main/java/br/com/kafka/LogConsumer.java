@@ -2,28 +2,25 @@ package br.com.kafka;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.serialization.StringDeserializer;
 
-import java.time.Duration;
 import java.util.Map;
-import java.util.Properties;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
-public class LogService {
+public class LogConsumer {
 
     public static void main(String[] args) {
-        var logService = new LogService();
-        try (var service = new KafkaService(
-                LogService.class.getSimpleName(),
-                LogService.class.getSimpleName() + "_" + UUID.randomUUID().toString(),
+        var logService = new LogConsumer();
+        try (var consumer = new KafkaConsumer(
+                LogConsumer.class.getSimpleName(),
+                LogConsumer.class.getSimpleName() + "_" + UUID.randomUUID().toString(),
                 Pattern.compile("ECOMMERCE.*"),
                 logService::parse,
                 String.class,
                 Map.of(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName())
         )) {
-            service.run();
+            consumer.run();
         }
     }
 

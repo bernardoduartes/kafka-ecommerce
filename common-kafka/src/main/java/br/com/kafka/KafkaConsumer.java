@@ -1,7 +1,6 @@
 package br.com.kafka;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
-import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.serialization.StringDeserializer;
 
 import java.io.Closeable;
@@ -11,23 +10,23 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.regex.Pattern;
 
-class KafkaService<T> implements Closeable {
-    private final KafkaConsumer<String, T> consumer;
+class KafkaConsumer<T> implements Closeable {
+    private final org.apache.kafka.clients.consumer.KafkaConsumer<String, T> consumer;
     private final ConsumerFunction parse;
 
-    KafkaService(final String groupIdConfig, final String clientIdConfig, final String topic, ConsumerFunction parse, Class<T> type, Map<String,String> properties) {
+    KafkaConsumer(final String groupIdConfig, final String clientIdConfig, final String topic, ConsumerFunction parse, Class<T> type, Map<String,String> properties) {
         this(groupIdConfig, clientIdConfig, parse, type, properties);
         consumer.subscribe(Collections.singletonList(topic));
     }
 
-    KafkaService(final String groupIdConfig, final String clientIdConfig, final Pattern topic, ConsumerFunction parse, Class<T> type, Map<String,String> properties) {
+    KafkaConsumer(final String groupIdConfig, final String clientIdConfig, final Pattern topic, ConsumerFunction parse, Class<T> type, Map<String,String> properties) {
         this(groupIdConfig, clientIdConfig, parse, type, properties);
         consumer.subscribe(topic);
     }
 
-    private KafkaService(final String groupIdConfig, final String clientIdConfig, ConsumerFunction parse, Class<T> type, Map<String,String> properties) {
+    private KafkaConsumer(final String groupIdConfig, final String clientIdConfig, ConsumerFunction parse, Class<T> type, Map<String,String> properties) {
         this.parse = parse;
-        this.consumer = new KafkaConsumer<>(this.properties(groupIdConfig, clientIdConfig, type, properties));
+        this.consumer = new org.apache.kafka.clients.consumer.KafkaConsumer<>(this.properties(groupIdConfig, clientIdConfig, type, properties));
     }
 
     void run() {

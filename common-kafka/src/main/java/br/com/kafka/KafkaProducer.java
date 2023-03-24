@@ -1,7 +1,6 @@
 package br.com.kafka;
 
 import org.apache.kafka.clients.producer.Callback;
-import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.StringSerializer;
@@ -10,12 +9,12 @@ import java.io.Closeable;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 
-class KafkaDispatcher<T> implements Closeable {
+class KafkaProducer<T> implements Closeable {
 
-    private final KafkaProducer<String, T> producer;
+    private final org.apache.kafka.clients.producer.KafkaProducer<String, T> producer;
 
-    KafkaDispatcher() {
-        this.producer = new KafkaProducer<>(properties());
+    KafkaProducer() {
+        this.producer = new org.apache.kafka.clients.producer.KafkaProducer<>(properties());
     }
 
     void send(final String topic, final String key, final T value) throws ExecutionException, InterruptedException {
