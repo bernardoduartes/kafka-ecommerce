@@ -5,7 +5,6 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import java.util.UUID;
 
 public class FraudDetectorService {
-
     public static void main(String[] args) {
 
         var fraudDetectorService = new FraudDetectorService();
@@ -17,9 +16,7 @@ public class FraudDetectorService {
         )) {
             service.run();
         }
-
     }
-
     private void parse(ConsumerRecord<Object, Object> record) {
         System.out.println("------------------------------------------");
         System.out.println("Processing new order, checking for fraud");

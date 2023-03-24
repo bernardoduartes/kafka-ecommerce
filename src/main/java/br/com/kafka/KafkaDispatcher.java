@@ -10,16 +10,15 @@ import java.io.Closeable;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 
-class KafkaDispatcher implements Closeable {
+class KafkaDispatcher<T> implements Closeable {
 
-    private final KafkaProducer<String, String> producer;
-
+    private final KafkaProducer<String, T> producer;
 
     KafkaDispatcher() {
         this.producer = new KafkaProducer<>(properties());
     }
 
-    void send(final String topic, final String key, final String value) throws ExecutionException, InterruptedException {
+    void send(final String topic, final String key, final T value) throws ExecutionException, InterruptedException {
         var records = new ProducerRecord<>(topic, key, value);
 
         Callback callback = (data, ex) -> {
@@ -31,18 +30,14 @@ class KafkaDispatcher implements Closeable {
                     + data.offset() + "/ timestamp " + data.timestamp());
         };
 
-        var email = "Thank you for your order! We are processing your order!";
-        var emailRecord = new ProducerRecord<>("ECOMMERCE_SEND_EMAIL", email, email);
-
         producer.send(records, callback).get();
-        producer.send(emailRecord, callback).get();
     }
 
     Properties properties() {
         var properties = new Properties();
         properties.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "127.0.0.1:9092");
         properties.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
-        properties.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+        properties.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, GsonSerializer.class.getName());
         return properties;
     }
 
