@@ -1,7 +1,10 @@
 package br.com.kafka;
 
+import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.common.serialization.StringDeserializer;
 
+import java.util.Map;
 import java.util.UUID;
 
 public class EmailService {
@@ -12,13 +15,15 @@ public class EmailService {
                 EmailService.class.getSimpleName(),
                 EmailService.class.getSimpleName() + "_" + UUID.randomUUID().toString(),
                 "ECOMMERCE_SEND_EMAIL",
-                emailService::parse
+                emailService::parse,
+                Email.class,
+                Map.of(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName())
         )) {
             service.run();
         }
     }
 
-    private void parse(ConsumerRecord<Object, Object> record) {
+    private void parse(ConsumerRecord<String, Email> record) {
         System.out.println("------------------------------------------");
         System.out.println("Sending email:");
         System.out.println("Key: " + record.key());

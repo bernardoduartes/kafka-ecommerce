@@ -6,6 +6,7 @@ import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.serialization.StringDeserializer;
 
 import java.time.Duration;
+import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
 import java.util.regex.Pattern;
@@ -18,7 +19,9 @@ public class LogService {
                 LogService.class.getSimpleName(),
                 LogService.class.getSimpleName() + "_" + UUID.randomUUID().toString(),
                 Pattern.compile("ECOMMERCE.*"),
-                logService::parse
+                logService::parse,
+                Object.class,
+                Map.of()
         )) {
             service.run();
         }
