@@ -20,14 +20,14 @@ public class LogService {
                 LogService.class.getSimpleName() + "_" + UUID.randomUUID().toString(),
                 Pattern.compile("ECOMMERCE.*"),
                 logService::parse,
-                Object.class,
-                Map.of()
+                String.class,
+                Map.of(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName())
         )) {
             service.run();
         }
     }
 
-    private void parse(ConsumerRecord<Object, Object> record) {
+    private void parse(ConsumerRecord<String, String> record) {
         System.out.println("------------------------------------------");
         System.out.println("LOG:" + record.topic());
         System.out.println("Key: " + record.key());

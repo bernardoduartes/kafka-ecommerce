@@ -1,6 +1,8 @@
 package br.com.kafka;
 
+import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.common.serialization.StringDeserializer;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,7 +18,7 @@ public class FraudDetectorService {
                 "ECOMMERCE_NEW_ORDER",
                 fraudDetectorService::parse,
                 Order.class,
-                Map.of()
+                Map.of(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName())
         )) {
             service.run();
         }
