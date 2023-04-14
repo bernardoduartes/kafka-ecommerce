@@ -1,4 +1,4 @@
-package br.com.kafka.dto;
+package br.com.kafka.model;
 
 public class EmailDTO {
     private final String subject, body;

@@ -1,6 +1,6 @@
 package br.com.kafka;
 
-import br.com.kafka.model.Email;
+import br.com.kafka.model.EmailDTO;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -17,14 +17,14 @@ public class EmailConsumer {
                 EmailConsumer.class.getSimpleName() + "_" + UUID.randomUUID().toString(),
                 "ECOMMERCE_SEND_EMAIL",
                 emailService::parse,
-                Email.class,
+                EmailDTO.class,
                 Map.of(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName())
         )) {
             consumer.run();
         }
     }
 
-    private void parse(ConsumerRecord<String, Email> record) {
+    private void parse(ConsumerRecord<String, EmailDTO> record) {
         System.out.println("------------------------------------------");
         System.out.println("Sending email:");
         System.out.println("Key: " + record.key());
