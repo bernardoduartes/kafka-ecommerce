@@ -26,7 +26,7 @@ public class FraudDetectorConsumer {
             consumer.run();
         }
     }
-    private void parse(ConsumerRecord<String, OrderDTO> record) throws ExecutionException, InterruptedException {
+    void parse(ConsumerRecord<String, OrderDTO> record) throws ExecutionException, InterruptedException {
 
 
         System.out.println("------------------------------------------");

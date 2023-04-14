@@ -39,9 +39,8 @@ class KafkaConsumer<T> implements Closeable {
                     for (var record : records) {
                         try {
                             parse.consume(record);
-                        } catch (ExecutionException e) {
-                            throw new RuntimeException(e);
-                        } catch (InterruptedException e) {
+                        } catch (Exception e) {
+                            e.printStackTrace();
                             throw new RuntimeException(e);
                         }
                     }
