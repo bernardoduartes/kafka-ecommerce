@@ -58,6 +58,5 @@ public class FraudDetectorConsumer {
 
     private boolean isFraud(final BigDecimal amount){
         return amount.compareTo(new BigDecimal("4500")) >= 0;
-
     }
 }

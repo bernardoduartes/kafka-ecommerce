@@ -1,21 +1,16 @@
 package br.com.kafka;
 
 
-import org.apache.kafka.clients.consumer.ConsumerRecord;
-
-import java.math.BigDecimal;
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.ExecutionException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Map;
+import java.util.UUID;
+
+import org.apache.kafka.clients.consumer.ConsumerRecord;
 
 
 public class CreateUserService {
-
-
-    private final KafkaProducer<OrderDTO> orderProducer = new KafkaProducer<OrderDTO>();
 
     private final Connection connection;
 
@@ -30,9 +25,9 @@ public class CreateUserService {
     public static void main(String[] args) throws SQLException {
 
         var createUserService = new CreateUserService();
-        try (var consumer = new KafkaConsumer<OrderDTO>(
-                FraudDetectorConsumer.class.getSimpleName(),
-                FraudDetectorConsumer.class.getSimpleName() + "_" + UUID.randomUUID(),
+        try (var consumer = new KafkaConsumer<>(
+                CreateUserService.class.getSimpleName(),
+                CreateUserService.class.getSimpleName() + "_" + UUID.randomUUID(),
                 "ECOMMERCE_NEW_ORDER",
                 createUserService::parse,
                 OrderDTO.class,
