@@ -9,15 +9,15 @@ import java.io.Closeable;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 
-class KafkaProducer<T> implements Closeable {
+public class KafkaProducer<T> implements Closeable {
 
     private final org.apache.kafka.clients.producer.KafkaProducer<String, T> producer;
 
-    KafkaProducer() {
+    public KafkaProducer() {
         this.producer = new org.apache.kafka.clients.producer.KafkaProducer<>(properties());
     }
 
-    void send(final String topic, final String key, final T value) throws ExecutionException, InterruptedException {
+    public void send(final String topic, final String key, final T value) throws ExecutionException, InterruptedException {
         var records = new ProducerRecord<>(topic, key, value);
 
         Callback callback = (data, ex) -> {
