@@ -39,10 +39,10 @@ public class FraudDetectorConsumer {
         var order = record.value();
         if(isFraud(order.getAmount())) {
             System.out.println("Order not approved. Fraud : " + order);
-            orderProducer.send("ECOMMERCE_ORDER_REJECTED", order.getUserId(), order);
+            orderProducer.send("ECOMMERCE_ORDER_REJECTED", order.getEmail(), order);
         } else {
             System.out.println("Order approved: " + order);
-            orderProducer.send("ECOMMERCE_ORDER_APPROVED", order.getUserId(), order);
+            orderProducer.send("ECOMMERCE_ORDER_APPROVED", order.getEmail(), order);
         }
 
         System.out.println("Order processed");
