@@ -56,7 +56,7 @@ class KafkaConsumer<T> implements Closeable {
         properties.setProperty(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, GsonDeserializer.class.getName());
         properties.setProperty(ConsumerConfig.GROUP_ID_CONFIG, groupIdConfig);
         properties.setProperty(ConsumerConfig.CLIENT_ID_CONFIG, clientIdConfig);
-        properties.setProperty(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, "1");
+        properties.setProperty(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, "1"); //número máximo de msgs consumidas por vez
         properties.putAll(overrideProperties);
         return properties;
     }
