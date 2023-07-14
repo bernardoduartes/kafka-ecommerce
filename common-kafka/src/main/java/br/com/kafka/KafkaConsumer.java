@@ -30,23 +30,32 @@ class KafkaConsumer<T> implements Closeable {
         this.consumer = new org.apache.kafka.clients.consumer.KafkaConsumer<>(this.properties(groupIdConfig, clientIdConfig, properties));
     }
 
-    void run() {
-        while (true) {
-            var records = consumer.poll(Duration.ofMillis(300));
-            if (!records.isEmpty()) {
+    void run() throws ExecutionException, InterruptedException {
+        try(var deadLetter = new KafkaProducer<>()) {
+            while (true) {
+                var records = consumer.poll(Duration.ofMillis(300));
                 if (!records.isEmpty()) {
-                    System.out.println("Encontrei " + records.count() + " registros.");
-                    for (var record : records) {
-                        try {
-                            parse.consume(record);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            throw new RuntimeException(e);
+                    if (!records.isEmpty()) {
+                        System.out.println("Encontrei " + records.count() + " registros.");
+                        for (var record : records) {
+                            try {
+                                parse.consume(record);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                var message = record.value();
+                                deadLetter.send(
+                                        "ECOMMERCE_DEADLETTER",
+                                        message.getId().toString(),
+                                        message.getId().continueWith("DeadLetter"),
+                                        new GsonSerializer<>().serialize("", message)
+                                );
+                            }
                         }
                     }
                 }
             }
         }
+
     }
 
     private Properties properties(String groupIdConfig, String clientIdConfig, Map<String,String> overrideProperties) {

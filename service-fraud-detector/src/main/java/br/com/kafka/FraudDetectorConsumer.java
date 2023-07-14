@@ -14,7 +14,7 @@ public class FraudDetectorConsumer {
 
     private final KafkaProducer<Order> orderProducer = new KafkaProducer<>();
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ExecutionException, InterruptedException {
 
         var fraudDetectorService = new FraudDetectorConsumer();
         try (var consumer = new KafkaConsumer<>(

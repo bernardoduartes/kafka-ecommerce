@@ -6,11 +6,12 @@ import org.apache.kafka.common.serialization.StringDeserializer;
 
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 import java.util.regex.Pattern;
 
 public class LogConsumer {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ExecutionException, InterruptedException {
         var logService = new LogConsumer();
         try (var consumer = new KafkaConsumer(
                 LogConsumer.class.getSimpleName(),

@@ -18,7 +18,7 @@ public class ReadingReportConsumer {
 
     private static final Path SOURCE = new File("src/main/resources/report.txt").toPath();
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ExecutionException, InterruptedException {
 
         var fraudDetectorService = new ReadingReportConsumer();
         try (var consumer = new KafkaConsumer<User>(

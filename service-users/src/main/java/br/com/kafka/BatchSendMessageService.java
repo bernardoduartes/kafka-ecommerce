@@ -27,7 +27,7 @@ public class BatchSendMessageService {
         }
     }
 
-    public static void main(String[] args) throws SQLException {
+    public static void main(String[] args) throws SQLException, ExecutionException, InterruptedException {
 
         var batchSendMessageService = new BatchSendMessageService();
         try (var consumer = new KafkaConsumer<>(
@@ -49,6 +49,8 @@ public class BatchSendMessageService {
         System.out.println("------------------------------------------");
         System.out.println("Processing new batch");
         System.out.println("Topic: + " + message.getPayload());
+
+        if(true) throw new RuntimeException("erro que foi forçado para teste da deadletter");
 
         for (User user : getAllUsers()) {
             userDispatcher.sendAsync (

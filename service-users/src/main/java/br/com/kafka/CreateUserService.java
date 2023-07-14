@@ -6,6 +6,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 
 import com.google.gson.Gson;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -31,7 +32,7 @@ public class CreateUserService {
         }
     }
 
-    public static void main(String[] args) throws SQLException {
+    public static void main(String[] args) throws SQLException, ExecutionException, InterruptedException {
 
         var createUserService = new CreateUserService();
         try (var consumer = new KafkaConsumer<>(

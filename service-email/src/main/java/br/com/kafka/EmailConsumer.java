@@ -7,10 +7,11 @@ import org.apache.kafka.common.serialization.StringDeserializer;
 
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 
 public class EmailConsumer {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ExecutionException, InterruptedException {
         var emailService = new EmailConsumer();
         try (var consumer = new KafkaConsumer(
                 EmailConsumer.class.getSimpleName(),
