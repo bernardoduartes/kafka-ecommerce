@@ -1,7 +1,9 @@
 package br.com.kafka;
 
 
+import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.common.serialization.StringDeserializer;
 
 import java.math.BigDecimal;
 import java.util.Map;
@@ -14,19 +16,17 @@ public class FraudDetectorConsumer {
     public static void main(String[] args) {
 
         var fraudDetectorService = new FraudDetectorConsumer();
-        try (var consumer = new KafkaConsumer<Order>(
+        try (var consumer = new KafkaConsumer<>(
                 FraudDetectorConsumer.class.getSimpleName(),
                 FraudDetectorConsumer.class.getSimpleName() + "_" + UUID.randomUUID(),
                 "ECOMMERCE_NEW_ORDER",
                 fraudDetectorService::parse,
-                Order.class,
                 Map.of()
         )) {
             consumer.run();
         }
     }
     void parse(ConsumerRecord<String, Message<Order>> record) throws ExecutionException, InterruptedException {
-
 
         System.out.println("------------------------------------------");
         System.out.println("Processing new order, checking for fraud");

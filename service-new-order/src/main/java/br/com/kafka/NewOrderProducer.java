@@ -17,10 +17,20 @@ public class NewOrderProducer {
                    var amount = new BigDecimal(Math.random() * 5000 + 1);
 
                    var order = new Order(orderId, amount, email);
-                   orderProducer.send("ECOMMERCE_NEW_ORDER", email, order);
+                   orderProducer.send(
+                           "ECOMMERCE_NEW_ORDER",
+                           email,
+                           new CurrelationId(NewOrderProducer.class.getSimpleName()),
+                           order
+                   );
 
                    var emailSubject = new Email("Email de compra", "Obrigado pela compra! Estamos processando seu pedido!");
-                   emailProducer.send("ECOMMERCE_SEND_EMAIL", email, emailSubject);
+                   emailProducer.send(
+                           "ECOMMERCE_SEND_EMAIL",
+                           email,
+                           new CurrelationId(NewOrderProducer.class.getSimpleName()),
+                           emailSubject
+                   );
                }
            }
        }

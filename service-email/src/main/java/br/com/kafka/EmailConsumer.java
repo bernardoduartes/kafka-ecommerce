@@ -17,7 +17,6 @@ public class EmailConsumer {
                 EmailConsumer.class.getSimpleName() + "_" + UUID.randomUUID().toString(),
                 "ECOMMERCE_SEND_EMAIL",
                 emailService::parse,
-                EmailDTO.class,
                 Map.of(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName())
         )) {
             consumer.run();

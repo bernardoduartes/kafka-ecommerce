@@ -7,7 +7,9 @@ import java.sql.SQLException;
 import java.util.Map;
 import java.util.UUID;
 
+import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.common.serialization.StringDeserializer;
 
 
 public class CreateUserService {
@@ -34,7 +36,6 @@ public class CreateUserService {
                 CreateUserService.class.getSimpleName() + "_" + UUID.randomUUID(),
                 "ECOMMERCE_NEW_ORDER",
                 createUserService::parse,
-                Order.class,
                 Map.of()
         )) {
             consumer.run();

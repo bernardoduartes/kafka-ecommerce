@@ -26,7 +26,6 @@ public class ReadingReportConsumer {
                 ReadingReportConsumer.class.getSimpleName() + "_" + UUID.randomUUID(),
                 "ECOMMERCE_USER_GENERATE_READING_REPORT",
                 fraudDetectorService::parse,
-                User.class,
                 Map.of()
         )) {
             consumer.run();

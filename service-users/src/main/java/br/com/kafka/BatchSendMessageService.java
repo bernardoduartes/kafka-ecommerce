@@ -35,7 +35,6 @@ public class BatchSendMessageService {
                 BatchSendMessageService.class.getSimpleName() + "_" + UUID.randomUUID(),
                 "ECOMMERCE_SEND_MASSAGE_TO_ALL_USERS",
                 batchSendMessageService::parse,
-                String.class,
                 Map.of()
         )) {
             consumer.run();

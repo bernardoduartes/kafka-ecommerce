@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.apache.kafka.common.serialization.Deserializer;
 
-public class GsonDeserializer<T> implements Deserializer<Message> {
+public class GsonDeserializer implements Deserializer<Message> {
 
    // public static final String TYPE_CONFIG = "br.com.kafka.ecommerce.type_config";
 
