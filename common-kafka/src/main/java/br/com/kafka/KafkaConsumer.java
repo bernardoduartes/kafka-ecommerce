@@ -12,20 +12,20 @@ import java.util.concurrent.ExecutionException;
 import java.util.regex.Pattern;
 
 class KafkaConsumer<T> implements Closeable {
-    private final org.apache.kafka.clients.consumer.KafkaConsumer<String, T> consumer;
+    private final org.apache.kafka.clients.consumer.KafkaConsumer<String, Message<T>> consumer;
     private final ConsumerFunction parse;
 
-    KafkaConsumer(final String groupIdConfig, final String clientIdConfig, final String topic, ConsumerFunction parse, Class<T> type, Map<String,String> properties) {
+    KafkaConsumer(final String groupIdConfig, final String clientIdConfig, final String topic, ConsumerFunction<T> parse, Class<T> type, Map<String,String> properties) {
         this(groupIdConfig, clientIdConfig, parse, type, properties);
         consumer.subscribe(Collections.singletonList(topic));
     }
 
-    KafkaConsumer(final String groupIdConfig, final String clientIdConfig, final Pattern topic, ConsumerFunction parse, Class<T> type, Map<String,String> properties) {
+    KafkaConsumer(final String groupIdConfig, final String clientIdConfig, final Pattern topic, ConsumerFunction<T>  parse, Class<T> type, Map<String,String> properties) {
         this(groupIdConfig, clientIdConfig, parse, type, properties);
         consumer.subscribe(topic);
     }
 
-    private KafkaConsumer(final String groupIdConfig, final String clientIdConfig, ConsumerFunction parse, Class<T> type, Map<String,String> properties) {
+    private KafkaConsumer(final String groupIdConfig, final String clientIdConfig, ConsumerFunction<T>  parse, Class<T> type, Map<String,String> properties) {
         this.parse = parse;
         this.consumer = new org.apache.kafka.clients.consumer.KafkaConsumer<>(this.properties(groupIdConfig, clientIdConfig, type, properties));
     }
@@ -54,7 +54,7 @@ class KafkaConsumer<T> implements Closeable {
         properties.setProperty(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "127.0.0.1:9092");
         properties.setProperty(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         properties.setProperty(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, GsonDeserializer.class.getName());
-        properties.setProperty(GsonDeserializer.TYPE_CONFIG, type.getName());
+      //  properties.setProperty(GsonDeserializer.TYPE_CONFIG, type.getName());
         properties.setProperty(ConsumerConfig.GROUP_ID_CONFIG, groupIdConfig);
         properties.setProperty(ConsumerConfig.CLIENT_ID_CONFIG, clientIdConfig);
         properties.setProperty(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, "1");

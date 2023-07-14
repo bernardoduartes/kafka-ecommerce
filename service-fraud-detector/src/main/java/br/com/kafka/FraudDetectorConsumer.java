@@ -14,7 +14,7 @@ public class FraudDetectorConsumer {
     public static void main(String[] args) {
 
         var fraudDetectorService = new FraudDetectorConsumer();
-        try (var consumer = new KafkaConsumer<>(
+        try (var consumer = new KafkaConsumer<Order>(
                 FraudDetectorConsumer.class.getSimpleName(),
                 FraudDetectorConsumer.class.getSimpleName() + "_" + UUID.randomUUID(),
                 "ECOMMERCE_NEW_ORDER",
@@ -25,7 +25,7 @@ public class FraudDetectorConsumer {
             consumer.run();
         }
     }
-    void parse(ConsumerRecord<String, Order> record) throws ExecutionException, InterruptedException {
+    void parse(ConsumerRecord<String, Message<Order>> record) throws ExecutionException, InterruptedException {
 
 
         System.out.println("------------------------------------------");
@@ -35,7 +35,8 @@ public class FraudDetectorConsumer {
         System.out.println("Partition: " + record.partition());
         System.out.println("Offset: " + record.offset());
 
-        var order = record.value();
+        var message = record.value();
+        var order = message.getPayload();
         if(isFraud(order.getAmount())) {
             System.out.println("Order not approved. Fraud : " + order);
             orderProducer.send("ECOMMERCE_ORDER_REJECTED", order.getEmail(), order);

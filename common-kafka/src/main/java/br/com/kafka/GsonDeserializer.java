@@ -4,13 +4,12 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.apache.kafka.common.serialization.Deserializer;
 
-import java.util.Map;
+public class GsonDeserializer<T> implements Deserializer<Message> {
 
-public class GsonDeserializer<T> implements Deserializer<T> {
+   // public static final String TYPE_CONFIG = "br.com.kafka.ecommerce.type_config";
 
-    public static final String TYPE_CONFIG = "br.com.kafka.ecommerce.type_config";
-
-    private final Gson gson = new GsonBuilder().create();
+    private final Gson gson = new GsonBuilder().registerTypeAdapter(Message.class, new MessageAdapter()).create();
+    /*
     private Class<T> type;
 
     @Override
@@ -22,9 +21,10 @@ public class GsonDeserializer<T> implements Deserializer<T> {
             throw new RuntimeException("Type for deserialization does not exist in the classpath." ,e);
         }
     }
+*/
 
     @Override
-    public T deserialize(String s, byte[] bytes) {
-        return gson.fromJson(new String(bytes), type);
+    public Message deserialize(String s, byte[] bytes) {
+        return gson.fromJson(new String(bytes), Message.class);
     }
 }
