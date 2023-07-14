@@ -1,5 +1,6 @@
-package br.com.kafka;
+package br.com.kafka.consumer;
 
+import br.com.kafka.Message;
 import br.com.kafka.producer.GsonSerializer;
 import br.com.kafka.producer.KafkaProducer;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -13,16 +14,16 @@ import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 import java.util.regex.Pattern;
 
-class KafkaConsumer<T> implements Closeable {
+public class KafkaConsumer<T> implements Closeable {
     private final org.apache.kafka.clients.consumer.KafkaConsumer<String, Message<T>> consumer;
     private final ConsumerFunction parse;
 
-    KafkaConsumer(final String groupIdConfig, final String clientIdConfig, final String topic, ConsumerFunction<T> parse, Map<String,String> properties) {
+    public KafkaConsumer(final String groupIdConfig, final String clientIdConfig, final String topic, ConsumerFunction<T> parse, Map<String,String> properties) {
         this(groupIdConfig, clientIdConfig, parse, properties);
         consumer.subscribe(Collections.singletonList(topic));
     }
 
-    KafkaConsumer(final String groupIdConfig, final String clientIdConfig, final Pattern topic, ConsumerFunction<T>  parse, Map<String,String> properties) {
+    public KafkaConsumer(final String groupIdConfig, final String clientIdConfig, final Pattern topic, ConsumerFunction<T>  parse, Map<String,String> properties) {
         this(groupIdConfig, clientIdConfig, parse, properties);
         consumer.subscribe(topic);
     }
@@ -32,7 +33,7 @@ class KafkaConsumer<T> implements Closeable {
         this.consumer = new org.apache.kafka.clients.consumer.KafkaConsumer<>(this.properties(groupIdConfig, clientIdConfig, properties));
     }
 
-    void run() throws ExecutionException, InterruptedException {
+    public void run() throws ExecutionException, InterruptedException {
         try(var deadLetter = new KafkaProducer<>()) {
             while (true) {
                 var records = consumer.poll(Duration.ofMillis(300));

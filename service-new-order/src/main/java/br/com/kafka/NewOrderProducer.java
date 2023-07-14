@@ -2,6 +2,7 @@ package br.com.kafka;
 
 import br.com.kafka.model.Email;
 import br.com.kafka.model.Order;
+import br.com.kafka.producer.KafkaProducer;
 
 import java.math.BigDecimal;
 import java.util.UUID;

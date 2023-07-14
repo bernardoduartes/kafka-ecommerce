@@ -5,7 +5,7 @@ public class Message<T> {
     private final CurrelationId id;
     private final T payload;
 
-    Message(CurrelationId id, T payload){
+    public Message(CurrelationId id, T payload){
         this.id = id;
         this.payload = payload;
     }

@@ -1,6 +1,8 @@
 package br.com.kafka;
 
 
+import br.com.kafka.consumer.KafkaConsumer;
+import br.com.kafka.producer.KafkaProducer;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 

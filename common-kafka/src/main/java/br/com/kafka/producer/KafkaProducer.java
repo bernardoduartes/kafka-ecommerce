@@ -1,5 +1,7 @@
-package br.com.kafka;
+package br.com.kafka.producer;
 
+import br.com.kafka.CurrelationId;
+import br.com.kafka.Message;
 import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -25,7 +27,7 @@ public class KafkaProducer<T> implements Closeable {
     }
 
     public Future<RecordMetadata> sendAsync(String topic, String key, CurrelationId currelationId, T payload) {
-        var value = new Message<>(currelationId, payload);
+        var value = new Message<>(currelationId.continueWith("_" + topic), payload);
         var records = new ProducerRecord<>(topic, key, value);
         Callback callback = (data, ex) -> {
             if (ex != null) {

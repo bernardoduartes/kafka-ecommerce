@@ -1,5 +1,7 @@
-package br.com.kafka;
+package br.com.kafka.consumer;
 
+import br.com.kafka.Message;
+import br.com.kafka.MessageAdapter;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.apache.kafka.common.serialization.Deserializer;

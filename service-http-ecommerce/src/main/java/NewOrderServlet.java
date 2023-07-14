@@ -1,5 +1,5 @@
 import br.com.kafka.CurrelationId;
-import br.com.kafka.KafkaProducer;
+import br.com.kafka.producer.KafkaProducer;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
