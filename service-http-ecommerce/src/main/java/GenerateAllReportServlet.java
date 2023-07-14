@@ -22,7 +22,7 @@ public class GenerateAllReportServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
 
-            bachDispatcher.send("SEND_MASSAGE_TO_ALL_USERS", "USER_GENERATE_READING_REPORT" ,"USER_GENERATE_READING_REPORT");
+            bachDispatcher.send("ECOMMERCE_SEND_MASSAGE_TO_ALL_USERS", "ECOMMERCE_USER_GENERATE_READING_REPORT" ,"ECOMMERCE_USER_GENERATE_READING_REPORT");
 
             System.out.println("Sent generate report to all users.");
             resp.setStatus(HttpServletResponse.SC_OK);

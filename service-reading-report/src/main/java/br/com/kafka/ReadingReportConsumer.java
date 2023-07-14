@@ -24,7 +24,7 @@ public class ReadingReportConsumer {
         try (var consumer = new KafkaConsumer<User>(
                 ReadingReportConsumer.class.getSimpleName(),
                 ReadingReportConsumer.class.getSimpleName() + "_" + UUID.randomUUID(),
-                "USER_GENERATE_READING_REPORT",
+                "ECOMMERCE_USER_GENERATE_READING_REPORT",
                 fraudDetectorService::parse,
                 User.class,
                 Map.of()

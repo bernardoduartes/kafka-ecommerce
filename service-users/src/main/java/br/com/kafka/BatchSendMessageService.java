@@ -33,7 +33,7 @@ public class BatchSendMessageService {
         try (var consumer = new KafkaConsumer<>(
                 CreateUserService.class.getSimpleName(),
                 BatchSendMessageService.class.getSimpleName() + "_" + UUID.randomUUID(),
-                "SEND_MASSAGE_TO_ALL_USERS",
+                "ECOMMERCE_SEND_MASSAGE_TO_ALL_USERS",
                 batchSendMessageService::parse,
                 String.class,
                 Map.of()
