@@ -11,16 +11,14 @@ import java.util.concurrent.ExecutionException;
 
 public class KafkaProducer<T> implements Closeable {
 
-    private final org.apache.kafka.clients.producer.KafkaProducer<String, Message<T>> producer;
+    private final org.apache.kafka.clients.producer.KafkaProducer<String, T> producer;
 
     public KafkaProducer() {
         this.producer = new org.apache.kafka.clients.producer.KafkaProducer<>(properties());
     }
 
     public void send(final String topic, final String key, final T payload) throws ExecutionException, InterruptedException {
-        var value = new Message<>(new CurrelationId(), payload);
-
-        var records = new ProducerRecord<>(topic, key, value);
+        var records = new ProducerRecord<>(topic, key, payload);
 
         Callback callback = (data, ex) -> {
             if (ex != null) {

@@ -1,7 +1,6 @@
 package br.com.kafka;
 
 
-import br.com.kafka.dto.OrderDTO;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 
 import java.math.BigDecimal;
@@ -11,22 +10,22 @@ import java.util.concurrent.ExecutionException;
 
 public class FraudDetectorConsumer {
 
-    private final KafkaProducer<OrderDTO> orderProducer = new KafkaProducer<OrderDTO>();
+    private final KafkaProducer<Order> orderProducer = new KafkaProducer<>();
     public static void main(String[] args) {
 
         var fraudDetectorService = new FraudDetectorConsumer();
-        try (var consumer = new KafkaConsumer<OrderDTO>(
+        try (var consumer = new KafkaConsumer<>(
                 FraudDetectorConsumer.class.getSimpleName(),
                 FraudDetectorConsumer.class.getSimpleName() + "_" + UUID.randomUUID(),
                 "ECOMMERCE_NEW_ORDER",
                 fraudDetectorService::parse,
-                OrderDTO.class,
+                Order.class,
                 Map.of()
         )) {
             consumer.run();
         }
     }
-    void parse(ConsumerRecord<String, OrderDTO> record) throws ExecutionException, InterruptedException {
+    void parse(ConsumerRecord<String, Order> record) throws ExecutionException, InterruptedException {
 
 
         System.out.println("------------------------------------------");

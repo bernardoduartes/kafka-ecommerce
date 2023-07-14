@@ -1,15 +1,17 @@
-package br.com.kafka.dto;
+package br.com.kafka;
 
 import java.math.BigDecimal;
 
-public class OrderDTO {
+
+import java.math.BigDecimal;
+
+public class Order {
 
     private final String orderId;
     private final BigDecimal amount;
     private final String email;
 
-    public OrderDTO(String orderId, BigDecimal amount, String email) {
-
+    public Order(String orderId, BigDecimal amount, String email) {
         this.orderId = orderId;
         this.amount = amount;
         this.email = email;
@@ -25,7 +27,7 @@ public class OrderDTO {
 
     @Override
     public String toString() {
-        return "OrderDTO{" +
+        return "Order{" +
                 "orderId='" + orderId + '\'' +
                 ", amount=" + amount +
                 ", email='" + email + '\'' +
