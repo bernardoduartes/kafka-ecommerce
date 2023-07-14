@@ -7,14 +7,16 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
 public class ReadingReportConsumer {
 
-    private static final Path SOURCE = new File("src/main/resources/reports/report.txt").toPath();
+    private static final Path SOURCE = new File("service-reading-report/src/main/resources/report.txt").toPath();
 
     public static void main(String[] args) {
 
@@ -30,6 +32,7 @@ public class ReadingReportConsumer {
             consumer.run();
         }
     }
+    
     void parse(ConsumerRecord<String, User> record) throws IOException {
         System.out.println("------------------------------------------");
         System.out.println("Processing report for " + record.value());
@@ -38,7 +41,7 @@ public class ReadingReportConsumer {
         System.out.println("Offset: " + record.offset());
         
         var user = record.value();
-        var target = new File(user.getReportPath());
+        var target = new File("service-reading-report/" + user.getReportPath());
         IO.copyTo(SOURCE, target);
         IO.append(target, "Created for " + user.getUuid());
 
