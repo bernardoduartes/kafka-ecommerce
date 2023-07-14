@@ -29,18 +29,18 @@ public class CreateUserService {
     public static void main(String[] args) throws SQLException {
 
         var createUserService = new CreateUserService();
-        try (var consumer = new KafkaConsumer<>(
+        try (var consumer = new KafkaConsumer<Order>(
                 CreateUserService.class.getSimpleName(),
                 CreateUserService.class.getSimpleName() + "_" + UUID.randomUUID(),
                 "ECOMMERCE_NEW_ORDER",
                 createUserService::parse,
-                OrderDTO.class,
+                Order.class,
                 Map.of()
         )) {
             consumer.run();
         }
     }
-    private void parse(ConsumerRecord<String, Message<OrderDTO>> record) throws SQLException {
+    private void parse(ConsumerRecord<String, Message<Order>> record) throws SQLException {
         System.out.println("------------------------------------------");
         System.out.println("Processing new order, checking for new user");
         System.out.println(record.value());

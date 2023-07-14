@@ -6,8 +6,8 @@ public class CurrelationId {
 
     private final String id;
 
-    public CurrelationId() {
-        this.id = UUID.randomUUID().toString();
+    public CurrelationId(String title) {
+        this.id = title + "("+UUID.randomUUID().toString()+")";
     }
 
     @Override
@@ -15,5 +15,9 @@ public class CurrelationId {
         return "CurrelationId{" +
                 "id='" + id + '\'' +
                 '}';
+    }
+
+    public CurrelationId continueWith(String title) {
+        return new CurrelationId(id + "-" + title);
     }
 }

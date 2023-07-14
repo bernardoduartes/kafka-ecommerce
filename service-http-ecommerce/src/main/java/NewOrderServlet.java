@@ -1,3 +1,4 @@
+import br.com.kafka.CurrelationId;
 import br.com.kafka.KafkaProducer;
 
 import javax.servlet.ServletException;
@@ -28,14 +29,23 @@ public class NewOrderServlet extends HttpServlet {
 
             var email = req.getParameter("email");
             var amount = new BigDecimal(req.getParameter("amount"));
-
             var orderId = UUID.randomUUID().toString();
-
             var order = new Order(orderId, amount, email);
-            orderProducer.send("ECOMMERCE_NEW_ORDER", email, order);
+
+            orderProducer.send(
+                    "ECOMMERCE_NEW_ORDER",
+                    email,
+                    new CurrelationId(NewOrderServlet.class.getSimpleName()),
+                    order
+            );
 
             var emailSubject = "Email de compra - Obrigado pela compra! Estamos processando seu pedido!";
-            emailProducer.send("ECOMMERCE_SEND_EMAIL", email, emailSubject);
+            emailProducer.send(
+                    "ECOMMERCE_SEND_EMAIL",
+                    email,
+                    new CurrelationId(NewOrderServlet.class.getSimpleName()),
+                    emailSubject
+            );
 
             System.out.println("New order sent successfully.");
             resp.setStatus(HttpServletResponse.SC_OK);

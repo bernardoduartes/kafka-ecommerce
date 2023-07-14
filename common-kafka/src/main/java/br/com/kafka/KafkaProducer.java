@@ -17,8 +17,8 @@ public class KafkaProducer<T> implements Closeable {
         this.producer = new org.apache.kafka.clients.producer.KafkaProducer<>(properties());
     }
 
-    public void send(final String topic, final String key, final T payload) throws ExecutionException, InterruptedException {
-        var value = new Message<>(new CurrelationId(), payload);
+    public void send(final String topic, final String key, CurrelationId currelationId, final T payload) throws ExecutionException, InterruptedException {
+        var value = new Message<>(currelationId, payload);
         var records = new ProducerRecord<>(topic, key, value);
         Callback callback = (data, ex) -> {
             if (ex != null) {
