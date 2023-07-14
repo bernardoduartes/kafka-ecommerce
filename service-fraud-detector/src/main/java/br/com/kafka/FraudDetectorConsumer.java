@@ -3,16 +3,17 @@ package br.com.kafka;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.apache.kafka.common.serialization.StringDeserializer;
 
 import java.math.BigDecimal;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
+
 public class FraudDetectorConsumer {
 
     private final KafkaProducer<Order> orderProducer = new KafkaProducer<>();
+
     public static void main(String[] args) {
 
         var fraudDetectorService = new FraudDetectorConsumer();
@@ -21,7 +22,7 @@ public class FraudDetectorConsumer {
                 FraudDetectorConsumer.class.getSimpleName() + "_" + UUID.randomUUID(),
                 "ECOMMERCE_NEW_ORDER",
                 fraudDetectorService::parse,
-                Map.of()
+                Map.of(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, FraudDetectorGsonDeserializer.class.getName())
         )) {
             consumer.run();
         }

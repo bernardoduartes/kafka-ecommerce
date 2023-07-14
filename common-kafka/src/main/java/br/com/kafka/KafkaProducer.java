@@ -3,11 +3,13 @@ package br.com.kafka;
 import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.serialization.StringSerializer;
 
 import java.io.Closeable;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 public class KafkaProducer<T> implements Closeable {
 
@@ -18,6 +20,11 @@ public class KafkaProducer<T> implements Closeable {
     }
 
     public void send(final String topic, final String key, CurrelationId currelationId, final T payload) throws ExecutionException, InterruptedException {
+        Future<RecordMetadata> future = sendAsync(topic, key, currelationId, payload);
+        future.get();
+    }
+
+    public Future<RecordMetadata> sendAsync(String topic, String key, CurrelationId currelationId, T payload) {
         var value = new Message<>(currelationId, payload);
         var records = new ProducerRecord<>(topic, key, value);
         Callback callback = (data, ex) -> {
@@ -28,8 +35,7 @@ public class KafkaProducer<T> implements Closeable {
             System.out.println("sucesso enviando " + data.topic() + ":::partition " + data.partition() + "/ offset "
                     + data.offset() + "/ timestamp " + data.timestamp());
         };
-
-        producer.send(records, callback).get();
+        return producer.send(records, callback);
     }
 
     Properties properties() {
