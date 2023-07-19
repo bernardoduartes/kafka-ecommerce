@@ -27,7 +27,7 @@ public class KafkaProducer<T> implements Closeable {
     }
 
     public Future<RecordMetadata> sendAsync(String topic, String key, CurrelationId currelationId, T payload) {
-        var value = new Message<>(currelationId.continueWith("_" + topic), payload);
+        var value = new Message<>(currelationId.continueWith("_ " + topic), payload);
         var records = new ProducerRecord<>(topic, key, value);
         Callback callback = (data, ex) -> {
             if (ex != null) {
