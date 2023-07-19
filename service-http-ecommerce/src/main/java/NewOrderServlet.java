@@ -14,13 +14,11 @@ import java.util.concurrent.ExecutionException;
 public class NewOrderServlet extends HttpServlet {
 
     private final KafkaProducer<Order> orderProducer = new KafkaProducer<>();
-    private final KafkaProducer<String> emailProducer = new KafkaProducer<>();
 
     @Override
     public void destroy() {
         super.destroy();
         orderProducer.close();
-        emailProducer.close();
     }
 
     @Override
@@ -39,15 +37,7 @@ public class NewOrderServlet extends HttpServlet {
                     order
             );
 
-            var emailSubject = "Email de compra - Obrigado pela compra! Estamos processando seu pedido!";
-            emailProducer.send(
-                    "ECOMMERCE_SEND_EMAIL",
-                    email,
-                    new CurrelationId(NewOrderServlet.class.getSimpleName()),
-                    emailSubject
-            );
-
-            System.out.println("New order sent successfully.");
+           System.out.println("New order sent successfully.");
             resp.setStatus(HttpServletResponse.SC_OK);
             resp.getWriter().println("New order sent");
 
