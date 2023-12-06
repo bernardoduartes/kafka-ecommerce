@@ -10,11 +10,12 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.spi.LocaleServiceProvider;
+import java.util.stream.IntStream;
 
 public class EmailConsumer  implements ConsumerService<String> {
 
     public static void main(String[] args) throws ExecutionException, InterruptedException {
-        new ServiceProvider().run(EmailConsumer::new);
+        new ServiceRunner(EmailConsumer::new).start(3);
     }
 
     @Override

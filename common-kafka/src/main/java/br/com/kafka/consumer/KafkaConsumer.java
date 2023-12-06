@@ -23,7 +23,7 @@ public class KafkaConsumer<T> implements Closeable {
         consumer.subscribe(Collections.singletonList(topic));
     }
 
-    public KafkaConsumer(final String groupIdConfig, final String clientIdConfig, final Pattern topic, ConsumerFunction<T>  parse, Map<String,String> properties) {
+    public KafkaConsumer(final String groupIdConfig, final String clientIdConfig, final Pattern topic, ConsumerFunction<T> parse, Map<String,String> properties) {
         this(groupIdConfig, clientIdConfig, parse, properties);
         consumer.subscribe(topic);
     }
