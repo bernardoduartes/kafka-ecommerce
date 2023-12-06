@@ -9,23 +9,16 @@ import org.apache.kafka.common.serialization.StringDeserializer;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
+import java.util.spi.LocaleServiceProvider;
 
-public class EmailConsumer {
+public class EmailConsumer  implements ConsumerService<String> {
 
     public static void main(String[] args) throws ExecutionException, InterruptedException {
-        var emailService = new EmailConsumer();
-        try (var consumer = new KafkaConsumer(
-                EmailConsumer.class.getSimpleName(),
-                EmailConsumer.class.getSimpleName() + "_" + UUID.randomUUID().toString(),
-                "ECOMMERCE_SEND_EMAIL",
-                emailService::parse,
-                Map.of(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName())
-        )) {
-            consumer.run();
-        }
+        new ServiceProvider().run(EmailConsumer::new);
     }
 
-    private void parse(ConsumerRecord<String, EmailDTO> record) {
+    @Override
+    public void parse(ConsumerRecord<String, EmailDTO> record) {
         System.out.println("------------------------------------------");
         System.out.println("Sending email:");
         System.out.println("Key: " + record.key());
@@ -40,5 +33,14 @@ public class EmailConsumer {
         }
         System.out.println("Email sent");
         System.out.println("------------------------------------------");
+    }
+
+    @Override
+    public String getConsumerGroup() {
+        return EmailConsumer.class.getSimpleName();
+    }
+    @Override
+    public String getTopic() {
+        return "ECOMMERCE_SEND_EMAIL";
     }
 }
