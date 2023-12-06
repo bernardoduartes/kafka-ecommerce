@@ -1,6 +1,5 @@
-package br.com.kafka;
+package br.com.kafka.consumer;
 
-import br.com.kafka.consumer.KafkaConsumer;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 
@@ -8,7 +7,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
-import java.util.function.Function;
 
 public class ServiceProvider<T> implements Callable<Void> {
 

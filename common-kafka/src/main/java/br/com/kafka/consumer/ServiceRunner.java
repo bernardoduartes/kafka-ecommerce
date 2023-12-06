@@ -1,4 +1,4 @@
-package br.com.kafka;
+package br.com.kafka.consumer;
 
 import java.util.concurrent.Executors;
 

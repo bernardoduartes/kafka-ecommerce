@@ -1,16 +1,10 @@
 package br.com.kafka;
 
-import br.com.kafka.consumer.KafkaConsumer;
-import br.com.kafka.model.EmailDTO;
-import org.apache.kafka.clients.consumer.ConsumerConfig;
+import br.com.kafka.consumer.ConsumerService;
+import br.com.kafka.consumer.ServiceRunner;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.apache.kafka.common.serialization.StringDeserializer;
 
-import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.ExecutionException;
-import java.util.spi.LocaleServiceProvider;
-import java.util.stream.IntStream;
 
 public class EmailConsumer  implements ConsumerService<String> {
 
@@ -19,7 +13,7 @@ public class EmailConsumer  implements ConsumerService<String> {
     }
 
     @Override
-    public void parse(ConsumerRecord<String, EmailDTO> record) {
+    public void parse(ConsumerRecord<String, Message<String>> record) {
         System.out.println("------------------------------------------");
         System.out.println("Sending email:");
         System.out.println("Key: " + record.key());
