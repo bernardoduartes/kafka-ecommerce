@@ -1,6 +1,8 @@
 package br.com.kafka;
 
+import br.com.kafka.consumer.ConsumerService;
 import br.com.kafka.consumer.KafkaConsumer;
+import br.com.kafka.consumer.ServiceRunner;
 import br.com.kafka.producer.KafkaProducer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 
@@ -10,23 +12,13 @@ import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
 
-public class ServiceEmailNewOrderConsumer {
+public class ServiceEmailNewOrderConsumer  implements ConsumerService<Order> {
 
     public static void main(String[] args) throws ExecutionException, InterruptedException {
-
-        var emailNewOrderConsumer = new ServiceEmailNewOrderConsumer();
-        try (var consumer = new KafkaConsumer<>(
-                ServiceEmailNewOrderConsumer.class.getSimpleName(),
-                ServiceEmailNewOrderConsumer.class.getSimpleName() + "_" + UUID.randomUUID(),
-                "ECOMMERCE_NEW_ORDER",
-                emailNewOrderConsumer::parse,
-                Map.of()
-        )) {
-            consumer.run();
-        }
+        new ServiceRunner(ServiceEmailNewOrderConsumer::new).start(1);
     }
 
-    void parse(ConsumerRecord<String, Message<Order>> record) throws ExecutionException, InterruptedException {
+    public void parse(ConsumerRecord<String, Message<Order>> record) throws ExecutionException, InterruptedException {
 
         System.out.println("------------------------------------------");
         System.out.println("Processing new order, preparing email");
@@ -49,9 +41,17 @@ public class ServiceEmailNewOrderConsumer {
                     message.getId().continueWith(ServiceEmailNewOrderConsumer.class.getSimpleName()),
                     emailSubject
             );
-
         }
+    }
 
+    @Override
+    public String getTopic() {
+        return "ECOMMERCE_NEW_ORDER";
+    }
+
+    @Override
+    public String getConsumerGroup() {
+        return ServiceEmailNewOrderConsumer.class.getSimpleName();
     }
 
     private boolean isFraud(final BigDecimal amount) {
