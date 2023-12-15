@@ -1,35 +1,40 @@
 package br.com.kafka;
 
 
+import br.com.kafka.consumer.ConsumerService;
 import br.com.kafka.consumer.KafkaConsumer;
+import br.com.kafka.consumer.ServiceRunner;
 import br.com.kafka.producer.KafkaProducer;
+import com.google.gson.Gson;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 
 import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
 
-public class FraudDetectorConsumer {
+public class FraudDetectorConsumer implements ConsumerService<Order> {
 
     private final KafkaProducer<Order> orderProducer = new KafkaProducer<>();
 
-    public static void main(String[] args) throws ExecutionException, InterruptedException {
+    private final LocalDatabase database;
 
-        var fraudDetectorService = new FraudDetectorConsumer();
-        try (var consumer = new KafkaConsumer<>(
-                FraudDetectorConsumer.class.getSimpleName(),
-                FraudDetectorConsumer.class.getSimpleName() + "_" + UUID.randomUUID(),
-                "ECOMMERCE_NEW_ORDER",
-                fraudDetectorService::parse,
-                Map.of(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, FraudDetectorGsonDeserializer.class.getName())
-        )) {
-            consumer.run();
-        }
+    FraudDetectorConsumer() throws SQLException {
+        this.database = new LocalDatabase("frauds_database");
+        this.database.createIfNotExists("CREATE TABLE IF NOT EXISTS Orders (" +
+                "uuid varchar(200) primary key," +
+                "is_fraud boolean)");
     }
-    void parse(ConsumerRecord<String, Message<Order>> record) throws ExecutionException, InterruptedException {
+
+    public static void main(String[] args) throws ExecutionException, InterruptedException {
+//                 Map.of(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, FraudDetectorGsonDeserializer.class.getName())
+        new ServiceRunner<>(FraudDetectorConsumer::new).start(1);
+    }
+
+    public void parse(ConsumerRecord<String, Message<Order>> record) throws ExecutionException, InterruptedException, SQLException {
 
         System.out.println("------------------------------------------");
         System.out.println("Processing new order, checking for fraud");
@@ -40,7 +45,13 @@ public class FraudDetectorConsumer {
 
         var message = record.value();
         var order = message.getPayload();
+
+        if(wasProcessed(order.getOrderId())) {
+            System.out.println("Order " + order.getOrderId() + " was already processed!");
+        }
+
         if(isFraud(order.getAmount())) {
+            database.update("inset into Orders (uuid, is_fraud) values (?, true)", order.getOrderId());
             System.out.println("Order not approved. Fraud : " + order);
             orderProducer.send(
                     "ECOMMERCE_ORDER_REJECTED",
@@ -67,6 +78,21 @@ public class FraudDetectorConsumer {
             // ignoring
             e.printStackTrace();
         }
+    }
+
+    private boolean wasProcessed(final String orderId) throws SQLException {
+        var results = database.query("select uuid from Orders where uuid = ? limit 1", orderId);
+        return results.next();
+    }
+
+    @Override
+    public String getTopic() {
+        return "ECOMMERCE_NEW_ORDER";
+    }
+
+    @Override
+    public String getConsumerGroup() {
+        return FraudDetectorConsumer.class.getSimpleName();
     }
 
     private boolean isFraud(final BigDecimal amount){

@@ -8,9 +8,15 @@ import org.apache.kafka.common.serialization.Deserializer;
 
 public class GsonDeserializer implements Deserializer<Message> {
 
-   // public static final String TYPE_CONFIG = "br.com.kafka.ecommerce.type_config";
-
     private final Gson gson = new GsonBuilder().registerTypeAdapter(Message.class, new MessageAdapter()).create();
+
+    @Override
+    public Message deserialize(String s, byte[] bytes) {
+        return gson.fromJson(new String(bytes), Message.class);
+    }
+    
+    // public static final String TYPE_CONFIG = "br.com.kafka.ecommerce.type_config";
+
     /*
     private Class<T> type;
 
@@ -24,9 +30,5 @@ public class GsonDeserializer implements Deserializer<Message> {
         }
     }
 */
-
-    @Override
-    public Message deserialize(String s, byte[] bytes) {
-        return gson.fromJson(new String(bytes), Message.class);
-    }
 }
+
